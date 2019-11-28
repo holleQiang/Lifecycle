@@ -16,6 +16,7 @@ public final class MLifecycle {
             return;
         }
         observers.add(observer);
+        notifyByState(mState);
     }
 
     public void unregisterObserver(Observer observer) {
@@ -149,23 +150,14 @@ public final class MLifecycle {
                 break;
             case PAUSE:
                 notifyCreate();
-                notifyStart();
-                notifyResume();
                 notifyPause();
                 break;
             case STOP:
                 notifyCreate();
-                notifyStart();
-                notifyResume();
-                notifyPause();
                 notifyStop();
                 break;
             case DESTROY:
                 notifyCreate();
-                notifyStart();
-                notifyResume();
-                notifyPause();
-                notifyStop();
                 notifyDestroy();
                 break;
         }

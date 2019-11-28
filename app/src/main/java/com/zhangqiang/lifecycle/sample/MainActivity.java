@@ -12,9 +12,12 @@ import com.zhangqiang.lifecycle.MLifecycleProvider;
 
 public class MainActivity extends AppCompatActivity implements MLifecycleOwner,TestPresener.View {
 
+    private MLifecycle mLifecycle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mLifecycle = MLifecycleProvider.get(this);
         setContentView(R.layout.activity_main);
 //        testLifeCycle();
 
@@ -27,17 +30,19 @@ public class MainActivity extends AppCompatActivity implements MLifecycleOwner,T
 //        getSupportFragmentManager().beginTransaction()
 //                .replace(R.id.fl_fragment_container,new LifecycleTestFragment())
 //                .commit();
-        PresenterFactory.get(this,TestPresener.class).test();
+//        PresenterFactory.get(this,TestPresener.class).test();
+        testLifeCycle();
+
     }
 
     private void testLifeCycle() {
 
-//        getLifecycle().addObserver(new GenericLifecycleObserver() {
-//            @Override
-//            public void onStateChanged(LifecycleOwner source, android.arch.lifecycle.Lifecycle.Event event) {
-//                Log.i("Test","=======MLifecycle.Event====="+event);
-//            }
-//        });
+        getLifecycle().addObserver(new GenericLifecycleObserver() {
+            @Override
+            public void onStateChanged(LifecycleOwner source, android.arch.lifecycle.Lifecycle.Event event) {
+                Log.i("Test","=======MLifecycle.Event====="+event);
+            }
+        });
         Log.i("Test","==========MainActivity====onCreate======");
         getMLifecycle().registerObserver(observer);
     }
@@ -57,8 +62,13 @@ public class MainActivity extends AppCompatActivity implements MLifecycleOwner,T
     @Override
     protected void onPause() {
         super.onPause();
+
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
 
     MLifecycle.Observer observer = new MLifecycle.Observer() {
         @Override
@@ -99,13 +109,13 @@ public class MainActivity extends AppCompatActivity implements MLifecycleOwner,T
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        testLifeCycle();
+//        testLifeCycle();
 
         MLifecycleProvider.get(MainActivity.this).unregisterObserver(observer);
     }
 
     @Override
     public MLifecycle getMLifecycle() {
-        return MLifecycleProvider.get(this);
+        return mLifecycle;
     }
 }
